@@ -1,0 +1,105 @@
+services:
+  gateway:
+    build: ./gateway
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      IDENTITY_SERVICE_URL: http://identity-service:5001
+      NOTIFICATION_SERVICE_URL: http://notification-service:5002
+      ORCHESTRATOR_SERVICE_URL: http://orchestrator-service:5003
+      EVENTS_SERVICE_URL: http://events-service:5004
+      REGISTRATIONS_SERVICE_URL: http://registrations-service:5005
+      CERTIFICATES_SERVICE_URL: http://certificates-service:5006
+    depends_on:
+      - identity-service
+      - orchestrator-service
+      - events-service
+      - registrations-service
+      - certificates-service
+
+  identity-service:
+    build: ./identity_service
+    ports:
+      - "5001:5001"
+    environment:
+      PORT: 5001
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
+    volumes:
+      - identity_data:/app/instance
+
+  notification-service:
+    build: ./notification_service
+    ports:
+      - "5002:5002"
+    environment:
+      PORT: 5002
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
+    volumes:
+      - notification_data:/app/instance
+
+  orchestrator-service:
+    build: ./orchestrator_service
+    ports:
+      - "5003:5003"
+    environment:
+      PORT: 5003
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
+      EVENTS_SERVICE_URL: http://events-service:5004
+      REGISTRATIONS_SERVICE_URL: http://registrations-service:5005
+      NOTIFICATION_SERVICE_URL: http://notification-service:5002
+    depends_on:
+      - events-service
+      - registrations-service
+      - notification-service
+
+  events-service:
+    build: ./events_service
+    ports:
+      - "5004:5004"
+    environment:
+      PORT: 5004
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
+    volumes:
+      - events_data:/app/instance
+
+  registrations-service:
+    build: ./registrations_service
+    ports:
+      - "5005:5005"
+    environment:
+      PORT: 5005
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
+      EVENTS_SERVICE_URL: http://events-service:5004
+    volumes:
+      - registrations_data:/app/instance
+    depends_on:
+      - events-service
+
+  certificates-service:
+    build: ./certificates_service
+    ports:
+      - "5006:5006"
+    environment:
+      PORT: 5006
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
+      REGISTRATIONS_SERVICE_URL: http://registrations-service:5005
+      EVENTS_SERVICE_URL: http://events-service:5004
+    volumes:
+      - certificates_data:/app/instance
+    depends_on:
+      - registrations-service
+
+volumes:
+  identity_data:
+  notification_data:
+  events_data:
+  registrations_data:
+  certificates_data:
