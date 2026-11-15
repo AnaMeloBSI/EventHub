@@ -84,6 +84,8 @@ def proxy_events(path):
 @gateway_bp.route("/api/registrations", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 @gateway_bp.route("/api/registrations/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 def proxy_registrations(path):
+    if request.method == "POST" and not path:
+        return forward_request(current_app.config["ORCHESTRATOR_SERVICE_URL"], "registrations")
     subpath = f"registrations/{path}" if path else "registrations"
     return forward_request(current_app.config["REGISTRATIONS_SERVICE_URL"], subpath)
 
