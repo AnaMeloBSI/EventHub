@@ -65,30 +65,40 @@ def health():
 
 @gateway_bp.route("/auth", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 @gateway_bp.route("/auth/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/auth", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/auth/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 def proxy_auth(path):
     subpath = f"auth/{path}" if path else "auth"
     return forward_request(current_app.config["IDENTITY_SERVICE_URL"], subpath)
 
 @gateway_bp.route("/events", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 @gateway_bp.route("/events/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/events", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/events/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 def proxy_events(path):
     subpath = f"events/{path}" if path else "events"
     return forward_request(current_app.config["EVENTS_SERVICE_URL"], subpath)
 
 @gateway_bp.route("/registrations", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 @gateway_bp.route("/registrations/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/registrations", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/registrations/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 def proxy_registrations(path):
     subpath = f"registrations/{path}" if path else "registrations"
     return forward_request(current_app.config["REGISTRATIONS_SERVICE_URL"], subpath)
 
 @gateway_bp.route("/orchestrator", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 @gateway_bp.route("/orchestrator/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/orchestrator", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/orchestrator/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 def proxy_orchestrator(path):
     subpath = f"orchestrator/{path}" if path else "orchestrator"
     return forward_request(current_app.config["ORCHESTRATOR_SERVICE_URL"], subpath)
 
 @gateway_bp.route("/certificates", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 @gateway_bp.route("/certificates/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/certificates", defaults={"path": ""}, methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
+@gateway_bp.route("/api/certificates/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
 def proxy_certificates(path):
     subpath = f"certificates/{path}" if path else "certificates"
     return forward_request(current_app.config["CERTIFICATES_SERVICE_URL"], subpath)
